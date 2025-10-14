@@ -29,7 +29,7 @@ RUN CGO_ENABLED=0 go install github.com/toozej/wheresmyprompt@latest && \
     CGO_ENABLED=0 go install github.com/toozej/files2prompt@latest
 
 # build Python dependencies for distroless
-FROM python:3.13-bookworm AS build-python-deps
+FROM python:3.14-bookworm AS build-python-deps
 
 # Install uv for faster Python package management and create virtual environment
 RUN pip install --no-cache-dir uv && \
