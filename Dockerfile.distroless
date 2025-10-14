@@ -1,7 +1,7 @@
 # setup project and deps
-FROM golang:1.24-bookworm AS init
+FROM golang:1.25-bookworm AS init
 
-WORKDIR /go/golang-starter/
+WORKDIR /go/waffles/
 
 COPY go.mod* go.sum* ./
 RUN go mod download
@@ -15,17 +15,71 @@ RUN go vet ./...
 FROM init AS test
 RUN go test -coverprofile c.out -v ./...
 
-# build binary
+# build waffles binary
 FROM init AS build
 ARG LDFLAGS
 
-RUN CGO_ENABLED=0 go build -ldflags="${LDFLAGS}"
+RUN CGO_ENABLED=0 go build -ldflags="${LDFLAGS}" -o waffles
 
-# runtime image including CA certs and tzdata
-FROM gcr.io/distroless/static-debian12:latest
-# Copy our static executable.
-COPY --from=build /go/golang-starter/golang-starter /go/bin/golang-starter
+# build Go dependencies
+FROM golang:1.25-bookworm AS build-go-deps
+
+# Install Go tools
+RUN CGO_ENABLED=0 go install github.com/toozej/wheresmyprompt@latest && \
+    CGO_ENABLED=0 go install github.com/toozej/files2prompt@latest
+
+# build Python dependencies for distroless
+FROM python:3.13-bookworm AS build-python-deps
+
+# Install uv for faster Python package management and create virtual environment
+RUN pip install --no-cache-dir uv && \
+    python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Install llm CLI tool in the virtual environment
+RUN /opt/venv/bin/pip install --no-cache-dir llm
+
+# Create a minimal Python runtime for distroless
+FROM debian:bookworm-slim AS python-runtime
+
+# Install minimal Python runtime
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3.13 \
+    python3.13-distutils \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy Python virtual environment
+COPY --from=build-python-deps /opt/venv /opt/venv
+
+# Create llm wrapper script that works in distroless
+RUN echo '#!/opt/venv/bin/python' > /usr/local/bin/llm && \
+    cat /opt/venv/bin/llm >> /usr/local/bin/llm && \
+    chmod +x /usr/local/bin/llm
+
+# runtime image including CA certs and tzdata - distroless with Python support
+FROM gcr.io/distroless/python3-debian12:latest
+
+# Copy our static executable
+COPY --from=build /go/waffles/waffles /go/bin/waffles
+
+# Copy Go tool binaries (static, no dependencies needed)
+COPY --from=build-go-deps /go/bin/wheresmyprompt /usr/local/bin/wheresmyprompt
+COPY --from=build-go-deps /go/bin/files2prompt /usr/local/bin/files2prompt
+
+# Copy Python virtual environment and llm tool
+COPY --from=python-runtime /opt/venv /opt/venv
+COPY --from=python-runtime /usr/local/bin/llm /usr/local/bin/llm
+
+# Set environment variables for Python
+ENV PATH="/go/bin:/usr/local/bin:/opt/venv/bin:$PATH"
+ENV PYTHONPATH="/opt/venv/lib/python3.13/site-packages"
+
+# Set working directory
+WORKDIR /workspace
+
 # Expose port for publishing as web service
 # EXPOSE 8081
-# Run the binary.
-ENTRYPOINT ["/go/bin/golang-starter"]
+
+# Run the binary
+ENTRYPOINT ["/go/bin/waffles"]
