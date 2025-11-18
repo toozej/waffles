@@ -13,7 +13,7 @@ require (
 	github.com/muesli/roff v0.1.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.10.1
-	golang.org/x/text v0.30.0
+	golang.org/x/text v0.31.0
 )
 
 require (
@@ -23,6 +23,6 @@ require (
 	github.com/muesli/mango-pflag v0.2.0 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
 	github.com/stretchr/testify v1.10.0 // indirect
-	golang.org/x/net v0.46.0 // indirect
-	golang.org/x/sys v0.37.0 // indirect
+	golang.org/x/net v0.47.0 // indirect
+	golang.org/x/sys v0.38.0 // indirect
 )
