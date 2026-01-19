@@ -234,7 +234,7 @@ homebrew_casks:
       name: homebrew-tap
       token: "{{ .Env.TAP_GITHUB_TOKEN }}"
     manpages:
-      - "man/waffles.1.gz"
+      - "manpages/waffles.1.gz"
     completions:
       bash: "completions/waffles.bash"
       zsh: "completions/waffles.zsh"
