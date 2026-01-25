@@ -82,11 +82,17 @@ repos:
           "DL3062"]
 
   # lint Makefile
-  - repo: https://github.com/checkmake/checkmake/
+  - repo: https://github.com/checkmake/checkmake
     rev: v0.3.0
     hooks:
       - id: checkmake
         files: Makefile
+
+  # lint GitHub Actions workflows
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.10
+    hooks:
+      - id: actionlint
 
   # goreleaser config check
   - repo: https://github.com/trussworks/pre-commit-hooks
