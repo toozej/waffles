@@ -64,4 +64,5 @@ ENV PATH="/go/bin:/usr/local/bin:${PATH}"
 WORKDIR /workspace
 
 # Run the binary
+USER non-root
 ENTRYPOINT ["/go/bin/waffles"]
