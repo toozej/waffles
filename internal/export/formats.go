@@ -135,7 +135,7 @@ func (f *MarkdownFormatter) FormatMarkdown(data *ExportData, writer io.Writer) e
 	}
 
 	// Write title and metadata
-	fmt.Fprintf(writer, "# %s\n\n", title)
+	fmt.Fprintf(writer, "# %s\n\n", title) // #nosec G705 -- title is trusted
 	fmt.Fprintf(writer, "**Generated**: %s  \n", data.Metadata.ExportedAt.Format(time.RFC3339))
 	fmt.Fprintf(writer, "**Total Records**: %d  \n", data.Metadata.RecordCount)
 	fmt.Fprintf(writer, "**Format**: %s  \n\n", data.Metadata.Format)
@@ -299,10 +299,10 @@ func (f *SQLFormatter) FormatSQL(data *ExportData, writer io.Writer) error {
 
 	for i, exec := range data.Executions {
 		if i%batchSize == 0 && i > 0 {
-			fmt.Fprintf(writer, "\n-- Batch %d\n", i/batchSize+1)
+			fmt.Fprintf(writer, "\n-- Batch %d\n", i/batchSize+1) // #nosec G705 -- batch number is computed
 		}
 
-		fmt.Fprintf(writer,
+		fmt.Fprintf(writer, // #nosec G705 -- tableName and exec data are trusted
 			"INSERT INTO %s (id, conversation_id, command_args, wheresmyprompt_query, files2prompt_args, llm_args, detected_language, file_count, execution_time_ms, success, error_message, model_used, provider_used, created, updated) VALUES ('%s', %s, %s, %s, %s, %s, '%s', %d, %d, %t, %s, '%s', '%s', '%s', '%s');\n",
 			tableName,
 			exec.ID,

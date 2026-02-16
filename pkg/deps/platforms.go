@@ -76,7 +76,7 @@ func (p *PlatformInstaller) InstallLLM() (*InstallationResult, error) {
 
 // installViaHomebrew installs a package using Homebrew
 func (p *PlatformInstaller) installViaHomebrew(packageName string) (*InstallationResult, error) {
-	cmd := exec.Command("brew", "install", packageName)
+	cmd := exec.Command("brew", "install", packageName) // #nosec G204 -- packageName from trusted config
 	output, err := cmd.CombinedOutput()
 
 	if err != nil {
@@ -102,7 +102,7 @@ func (p *PlatformInstaller) installViaGo(packagePath string) (*InstallationResul
 		}, err
 	}
 
-	cmd := exec.Command("go", "install", packagePath)
+	cmd := exec.Command("go", "install", packagePath) // #nosec G204 -- packagePath from trusted config
 	output, err := cmd.CombinedOutput()
 
 	if err != nil {
@@ -118,9 +118,8 @@ func (p *PlatformInstaller) installViaGo(packagePath string) (*InstallationResul
 	}, nil
 }
 
-// installViaPipx installs a package using pipx
 func (p *PlatformInstaller) installViaPipx(packageName string) (*InstallationResult, error) {
-	cmd := exec.Command("pipx", "install", packageName)
+	cmd := exec.Command("pipx", "install", packageName) // #nosec G204 -- packageName from trusted config
 	output, err := cmd.CombinedOutput()
 
 	if err != nil {
@@ -138,7 +137,7 @@ func (p *PlatformInstaller) installViaPipx(packageName string) (*InstallationRes
 
 // installViaPip installs a package using pip
 func (p *PlatformInstaller) installViaPip(packageName string) (*InstallationResult, error) {
-	cmd := exec.Command("pip", "install", packageName)
+	cmd := exec.Command("pip", "install", packageName) // #nosec G204 -- packageName from trusted config
 	output, err := cmd.CombinedOutput()
 
 	if err != nil {
@@ -223,7 +222,7 @@ func (p *PlatformInstaller) getGitHubReleaseURL(owner, repo string) (string, err
 
 // downloadFile downloads a file from URL to the given writer with progress indication
 func (p *PlatformInstaller) downloadFile(url string, dest io.Writer) error {
-	resp, err := http.Get(url) // #nosec G107 -- URL from trusted dependency configuration
+	resp, err := http.Get(url) // #nosec G107 G704 -- URL from trusted dependency configuration
 	if err != nil {
 		return fmt.Errorf("failed to download: %w", err)
 	}

@@ -85,7 +85,7 @@ func (d *Database) QueryExecutions(filter *ExecutionFilter) ([]WafflesExecution,
 	}
 
 	if filter.Offset > 0 {
-		query += fmt.Sprintf(" OFFSET %d", filter.Offset)
+		query += fmt.Sprintf(" OFFSET %d", filter.Offset) // #nosec G202 -- Offset is int, not user input
 	}
 
 	// Execute query

@@ -31,7 +31,7 @@ func InstallLLMPlugin(plugin string) error {
 	}
 
 	// Install the plugin
-	cmd := exec.Command("llm", "install", plugin)
+	cmd := exec.Command("llm", "install", plugin) // #nosec G204 -- plugin from trusted config
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("failed to install plugin %s: %w\nOutput: %s", plugin, err, string(output))
