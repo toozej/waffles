@@ -31,14 +31,14 @@ RUN CGO_ENABLED=0 go install github.com/toozej/wheresmyprompt@latest && \
     CGO_ENABLED=0 go install github.com/toozej/files2prompt@latest
 
 # build Python dependencies
-FROM python:3.13-bookworm AS build-python-deps
+FROM python:3.14-bookworm AS build-python-deps
 
 # Install uv and llm CLI tool
 RUN pip install --no-cache-dir uv && \
     uv pip install --system --no-cache llm
 
 # runtime image with Python support
-FROM python:3.13-slim-bookworm
+FROM python:3.14-slim-bookworm
 
 # Install runtime dependencies and create directories
 RUN apt-get update && apt-get install -y --no-install-recommends \
