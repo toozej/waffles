@@ -1,5 +1,5 @@
 # setup project and deps
-FROM golang:1.25-bookworm AS init
+FROM golang:1.26-bookworm AS init
 
 WORKDIR /go/waffles/
 
@@ -24,7 +24,7 @@ ARG LDFLAGS
 RUN CGO_ENABLED=0 go build -ldflags="${LDFLAGS}" -o waffles
 
 # build Go dependencies
-FROM golang:1.25-bookworm AS build-go-deps
+FROM golang:1.26-bookworm AS build-go-deps
 
 # Install Go tools
 RUN CGO_ENABLED=0 go install github.com/toozej/wheresmyprompt@latest && \
