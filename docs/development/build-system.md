@@ -395,18 +395,18 @@ nfpms:
 .PHONY: release-local
 release-local: clean deps test
 	@echo "Building release artifacts..."
-	goreleaser release --snapshot --rm-dist
+	goreleaser release --snapshot --clean
 	@echo "Release artifacts built in dist/"
 
 .PHONY: release-test
 release-test: clean deps test
 	@echo "Testing release process..."
-	goreleaser release --skip-publish --rm-dist
+	goreleaser release --skip-publish --clean
 
 .PHONY: release-publish
 release-publish: clean deps test
 	@echo "Publishing release..."
-	goreleaser release --rm-dist
+	goreleaser release --clean
 ```
 
 ## Packaging and Distribution
@@ -513,7 +513,7 @@ jobs:
       with:
         distribution: goreleaser
         version: latest
-        args: release --rm-dist
+        args: release --clean
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
