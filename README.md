@@ -8,6 +8,10 @@
 
 ![Screenshot](img/avatar.png)
 
+
+## ARCHIVED - no longer used
+
+
 **Waffles** is a command-line tool that orchestrates an LLM toolchain for local development workflows. It automates the process of gathering project context, retrieving prompts, and executing LLM queries, making AI-assisted development more efficient and consistent. Waffles should be pronounced with a Donkey from Shrek accent.
 
 ## Features
